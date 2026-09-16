@@ -1,0 +1,44 @@
+.preview .entity-demo { width:100%; display:grid; gap:7px; color:var(--ink); text-align:left; font-size:11px; }
+.preview .entity-demo__stage { min-height:55px; display:flex; align-items:center; justify-content:center; gap:7px; flex-wrap:wrap; }
+.preview .entity-demo__caption { display:flex; justify-content:space-between; color:var(--muted); font:9px 'DM Mono', monospace; text-transform:uppercase; letter-spacing:.06em; }
+.preview .entity-demo__hint { color:#6eaa53; }
+.preview .entity-demo__status { color:var(--muted); font:9px 'DM Mono', monospace; border-top:1px solid var(--line); padding-top:5px; }
+.preview .entity-demo button, .preview .entity-demo select, .preview .entity-demo input { font:11px 'DM Mono', monospace; }
+.preview .entity-demo button { border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 8px; cursor:pointer; }
+.preview .entity-demo button:hover, .preview .entity-demo button.is-selected, .preview .entity-demo button.is-active { border-color:var(--coral); color:var(--coral); }
+.preview .entity-demo__primary { border-color:var(--ink) !important; background:var(--ink) !important; color:var(--lime) !important; font-weight:700; }
+.preview .entity-demo__input, .preview .entity-demo__select { min-width:135px; border:1px solid var(--line); background:var(--card); color:var(--ink); outline:0; padding:7px; }
+.preview .entity-demo__number { min-width:55px; width:60px; }
+.preview .entity-demo__color { width:38px; height:28px; padding:2px; }
+.preview .entity-demo__file { max-width:155px; font-size:10px; }
+.preview .entity-demo__choice-group { display:grid; gap:5px; }
+.preview .entity-demo__choice { display:flex; gap:6px; align-items:center; }
+.preview .entity-demo__choice input { min-width:0; }
+.preview .entity-demo__nav, .preview .entity-demo__list { display:flex; gap:5px; flex-wrap:wrap; }
+.preview .entity-demo__list-item { text-align:left; }
+.preview .entity-demo__disclosure { width:86%; border-bottom:1px solid var(--line); padding-bottom:6px; }
+.preview .entity-demo__disclosure summary { cursor:pointer; }
+.preview .entity-demo__disclosure p { color:var(--muted); line-height:1.4; margin:7px 0 0; }
+.preview .entity-demo__message { padding:8px; background:#e7f0df; border-left:3px solid #6eaa53; }
+.preview .entity-demo__dismiss { padding:2px 6px !important; }
+.preview .entity-demo__panel { display:grid; gap:5px; width:86%; padding:8px; background:var(--ink); color:var(--lime); }
+.preview .entity-demo__panel span { color:#d8e3be; font-size:10px; }
+.preview .entity-demo__table { width:100%; border-collapse:collapse; font-size:10px; }
+.preview .entity-demo__table th, .preview .entity-demo__table td { padding:5px; border-bottom:1px solid var(--line); text-align:left; }
+.preview .entity-demo__table tr { cursor:pointer; }
+.preview .entity-demo__table tr.is-selected { background:var(--lime); }
+.preview .entity-demo__layout { display:flex; gap:5px; width:86%; }
+.preview .entity-demo__layout.is-split { flex-direction:column; }
+.preview .entity-demo__layout span { display:grid; place-items:center; min-width:36px; min-height:30px; flex:1; border:1px solid var(--line); background:#edf0e7; }
+.preview .entity-demo__drag-list { display:flex; gap:5px; flex-wrap:wrap; }
+.preview .entity-demo__drag-item.is-dragging { opacity:.45; }
+.preview .entity-demo__steps { display:flex; gap:7px; color:var(--muted); font-size:9px; }
+.preview .entity-demo__master-detail { display:grid; grid-template-columns:1fr 1fr; width:100%; border:1px solid var(--line); }
+.preview .entity-demo__master { display:grid; gap:3px; padding:5px; border-right:1px solid var(--line); }
+.preview .entity-demo__detail { padding:8px; color:var(--muted); }
+.preview .entity-demo__slide { min-width:135px; padding:12px; text-align:center; background:#edf0e7; }
+.preview .entity-demo__workspace { position:relative; width:100%; min-height:80px; background-color:#edf0e7; background-image:radial-gradient(#b9c2b5 1px, transparent 1px); background-size:12px 12px; overflow:hidden; }
+.preview .entity-demo__node { position:absolute; left:calc(14% + var(--node-index) * 27%); top:calc(18px + var(--node-index) * 13px); }
+.preview .entity-demo__node.is-selected { background:var(--lime); border-color:var(--ink); }
+.preview .entity-demo__editor { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; }
+.preview .entity-demo__generic-note { color:var(--muted); }

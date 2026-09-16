@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Frontend Entity Atlas — 一个帮助人和 AI 识别前端实体的双语词典。" />
+  <title>Frontend Entity Atlas / 前端实体图谱</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="eyebrow"><span class="signal"></span> FRONTEND ENTITY ATLAS · 124 ENTITIES</div>
+    <div class="topline">
+      <a class="brand" href="./">FE<span>/</span>EA</a>
+      <div class="audience">给人看的界面<br />给 AI 的指代坐标</div>
+      <button class="contrast-toggle" type="button" aria-pressed="false">亮度 <span>○</span></button>
+    </div>
+    <div class="hero">
+      <div>
+        <p class="kicker">A bilingual field guide to visible interface things</p>
+        <h1>看见一个实体，<br /><em>说出它的名字。</em></h1>
+      </div>
+      <p class="hero-note">这是一个将视觉对象、英文术语、中文名称和交互状态对齐的前端概念展页。搜索一个词，或者直接从画布中探索。</p>
+    </div>
+  </header>
+
+  <main class="atlas-shell">
+    <aside class="rail" aria-label="概念分类">
+      <p class="rail-label">INDEX / 分类</p>
+      <nav id="category-nav"></nav>
+      <div class="legend"><span class="legend-dot"></span> LIVE PREVIEW<br /><small>可操作状态预览</small></div>
+    </aside>
+
+    <section class="gallery" aria-labelledby="gallery-title">
+      <div class="gallery-head">
+        <div><p class="kicker">THE COLLECTION</p><h2 id="gallery-title">首期实体集</h2></div>
+        <label class="search"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="搜索英文、中文或用途…" /></label>
+      </div>
+      <div class="filter-row" id="filter-row"></div>
+      <div class="cards" id="cards" aria-live="polite"></div>
+      <p class="empty" id="empty-state" hidden>没有匹配的实体。试试 “button”、 “按钮” 或 “反馈”。</p>
+    </section>
+  </main>
+
+  <dialog id="entity-dialog" class="entity-dialog">
+    <button class="dialog-close" type="button" aria-label="关闭详情">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

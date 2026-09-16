@@ -1,0 +1,18 @@
+# Navigation 展示审计
+
+本审计覆盖 `src/data/navigation/index.js` 中的 6 条实体。判断依据是当前 `src/views/preview-renderer.js` 的 renderer 映射、`src/components/entity-demo.js` 的分支逻辑，以及 `Tabs` 专用组件的实际 DOM、可见内容和事件行为。`Match` 表示实体声明与当前 demo 的对应程度；`Significance` 表示定义中的关键行为是否能被用户明显感知。通用 `EntityDemo.buildNavigation()` 只提供一个最小导航按钮示例，不能视为完整的导航组件实现。
+
+## 逐条审计
+
+| Entity | Claimed concept | Actual demo | Visible result | Interaction | Match | Significance | Gap |
+|---|---|---|---|---|---|---|---|
+| `link` — Link / 链接 | **Definition:** 一种具有语义化导航含义的目标，可将用户带到另一个位置或资源。<br>**Use:** 用于页面跳转、文档引用、页内锚点，以及无障碍跳过重复导航内容。 | `preview.renderer = link` 没有专用构造器；`renderPreview()` 回退到 `EntityDemo`，由 `kind() = link` 进入 `buildNavigation()`。 | 一个带 `aria-label="链接 / Link"` 的 `nav`，内含 `Home`、`Entities`、`Current · 当前` 三个 `button`；没有 `a` 元素、`href` 或真实目的地。 | 点击按钮会切换当前按钮的 active class，并显示 `Navigated to ...` 状态；不会跳转、修改历史记录、跳到锚点或打开外部资源。 | **Low** | **Low** — 能看到一个可点击的导航按钮组，但没有呈现链接的语义、目的地或浏览器导航行为。 | 缺少 `a`/`href`、页内锚点、外部链接、visited 状态、历史记录保留、跳过链接和真实页面跳转。 |
+| `tabs` — Tabs / 标签页 | **Definition:** 一种导航控件，用于在同一区域内切换彼此并列的内容面板。<br>**Use:** 用于设置分区、详情视图、编辑器，以及其他彼此并列的内容分类。 | `preview.renderer = tabs`，使用专用 `Tabs` renderer；`optionsFor()` 注入两个 tab：`概览 Overview` 和 `详情 Details`，各自带一个 panel。 | 可见的 `tablist` 包含两个带 `role="tab"` 的按钮；初始显示 `概览 Overview` 对应的 `tabpanel`，另一个面板隐藏。切换后 active 样式、`aria-selected`、`tabIndex` 和面板可见性同步更新。 | 点击标签可切换面板；聚焦标签后可用左右方向键、Home、End 移动并选择标签，组件发出 `tabs:change`。 | **High** | **High** — 并列标签、当前项和内容面板之间的切换关系清晰可见且可操作，直接表达了定义中的核心行为。 | 未演示垂直方向、滚动溢出、关闭、重排、禁用项或懒加载；面板内容只是简短占位文本。 |
+| `breadcrumb` — Breadcrumb / 面包屑导航 | **Definition:** 一种层级化路径，用于说明用户在嵌套内容中的当前位置。<br>**Use:** 用于文档、设置、产品分类、文件浏览器和编辑器层级结构。 | `preview.renderer = breadcrumb` 没有专用构造器；回退到 `EntityDemo.buildNavigation()`。 | 一个普通 `nav` 和三个并列 `button`：`Home`、`Entities`、`Current · 当前`；没有层级分隔符、祖先路径或专门的当前项标记。 | 点击任一按钮会切换 active class，并输出 `Navigated to Home/Entities/Current`；没有进入祖先位置或更新路径。 | **Low** | **Low** — 用户只能看到通用的可点击导航组，无法明显理解“当前位置位于嵌套层级路径中”。 | 缺少 `BreadcrumbList`、`BreadcrumbItem`、分隔符、祖先链接、当前页面语义、长路径折叠和溢出菜单。 |
+| `pagination` — Pagination / 分页 | **Definition:** 一种用于浏览大型集合的控件，这些内容被划分为多个结果页或游标位置。<br>**Use:** 用于搜索结果、数据表格、资源浏览器和服务端分页的数据集合。 | `preview.renderer = pagination` 没有专用构造器；回退到 `EntityDemo.buildNavigation()`。 | 一个普通 `nav`，显示 `Home`、`Entities`、`Current · 当前` 三个按钮；没有页码、上一页/下一页、总页数或页大小选择器。 | 点击按钮只改变按钮的 active class 和状态文字；不能换页、跳页、改变页大小或加载下一游标。 | **Low** | **Low** — 预览没有显示集合分页的任何核心线索，通用按钮点击不足以表达分页。 | 缺少页码、当前页、First/Previous/Next/Last、省略号、页大小选择、跳转输入、游标加载和当前页播报。 |
+| `sidebar-navigation` — Sidebar Navigation / 侧边导航 | **Definition:** 一种持续显示在页面侧面的区域，用于组织目的地和导航分组。<br>**Use:** 用于应用、仪表板、编辑器、文件浏览器和包含多个分区的工作区。 | `preview.renderer = sidebar-navigation` 没有专用构造器；由于 renderer 名称包含 `navigation`，回退到 `EntityDemo.buildNavigation()`。 | 只有一个普通 `nav` 及 `Home`、`Entities`、`Current · 当前` 三个按钮，位于实体 demo 的常规 stage 中；没有侧边栏区域、分组标题或折叠 rail。 | 点击按钮会切换 active class，并显示导航状态；没有展开分组、折叠侧栏或显示上下文操作。 | **Low** | **Low** — 可见内容没有表达“页面侧面持续存在的导航区域”，也没有侧边导航的组织层次。 | 缺少持久侧栏布局、分组/嵌套条目、活动指示器、展开/折叠 rail、徽标、底部区域和响应式抽屉行为。 |
+| `tree-navigation` — Tree Navigation / 树导航 | **Definition:** 一种层级化导航控件，其中的条目可以展开以显示嵌套的目的地或对象。<br>**Use:** 用于文件系统、项目导航、图层层级和嵌套定义。 | `preview.renderer = tree-navigation` 没有专用构造器；由于 renderer 名称包含 `navigation`，回退到 `EntityDemo.buildNavigation()`。 | 一个普通 `nav` 和三个平级按钮；没有 `tree`/`treeitem` 语义、展开器、子节点、层级缩进或加载中的子树。 | 点击按钮会切换 active class，并报告 `Navigated to ...`；不能展开、收起、选择子节点、拖放或使用树形方向键导航。 | **Low** | **Low** — 预览展示的是平面导航按钮，而不是可揭示嵌套对象的层级控件。 | 缺少 Tree/TreeItem 结构、Expander、Children、层级选择、多选、重命名、拖放、懒加载和树形键盘导航。 |
+
+## 统计
+
+按 `Match` 统计：High **1**、Medium **0**、Low **5**；共 **6** 条审计记录。按 `Significance` 统计：High **1**、Medium **0**、Low **5**。翻译字段 `definitionZh` 和 `useZh` 已为 6 条实体全部补齐。

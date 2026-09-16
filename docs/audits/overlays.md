@@ -1,0 +1,20 @@
+# Overlays 展示审计
+
+本审计覆盖 `src/data/overlays/index.js` 中的 6 条实体。判断依据是当前 `src/views/preview-renderer.js` 的 renderer 映射、`src/components/entity-demo.js` 的分支逻辑，以及 `Modal` 和 `Tooltip` 专用组件的实际 DOM、可见内容与事件行为。`Match` 表示实体声明与当前 demo 的对应程度；`Significance` 表示定义中的关键行为是否能被用户明显感知。
+
+当前没有单独的 `modal` 实体；`dialog` 通过 `preview.renderer = dialog` 路由到专用 `Modal` 实现。`tooltip` 和 `hover-card` 都路由到 `Tooltip`，因此 Hover Card 当前不是丰富卡片实现。`popover`、`drawer` 和 `sheet` 没有专用构造器，都会回退到 `EntityDemo.buildOverlay()`，共享普通的隐藏面板切换 demo。审计以用户实际看到的 DOM 与可执行操作为准，不把 `preview.example` 或 `behaviors` 字段当成已经实现的功能。
+
+## 逐条审计
+
+| Entity | Claimed concept | Actual demo | Visible result | Interaction | Match | Significance | Gap |
+|---|---|---|---|---|---|---|---|
+| `tooltip` — Tooltip / 工具提示 | **Definition:** 附着在元素上的简短补充说明，会在悬停或获得焦点时显示。<br>**Use:** 用于解释图标、缩写、被截断的标签或用户不熟悉的控件。 | `preview.renderer = tooltip`，使用专用 `Tooltip` renderer；`optionsFor()` 提供 `ⓘ` 触发按钮，并将 `use` 作为提示内容。 | 可见一个带 `aria-describedby`、`aria-expanded` 的 `ⓘ` 按钮；提示面板是带 `role="tooltip"` 的隐藏 `span`，显示时出现在按钮附近并呈现英文用途说明。 | 鼠标进入或按钮获得焦点时显示；点击可切换显示/隐藏；鼠标离开或失焦后约 120ms 隐藏；聚焦时按 Escape 隐藏。 | **High** | **High** — 简短说明与触发元素的附着关系，以及悬停/聚焦揭示行为都很明显。 | 没有实现声明中的显示延迟（当前仅对隐藏使用 120ms 延迟）；当前示例没有展示 Rich、Shortcut 等变体或多个定位方式。 |
+| `popover` — Popover / 弹出面板 | **Definition:** 一种锚定在触发器上的浮动面板，能够容纳比简短工具提示更丰富的内容。<br>**Use:** 用于选择列表、颜色选择器、日期选择器、菜单、筛选器和丰富的上下文信息。 | `preview.renderer = popover` 没有专用构造器，回退到 `EntityDemo.buildOverlay()`；该分支只是生成一个普通 `div` 面板。 | 可见 `打开 / Open` 按钮；初始隐藏的面板打开后显示 `Popover / 弹出面板` 标题和英文用途说明。面板不是浮动定位元素，没有箭头、表头、正文控件或操作区。 | 点击同一个 `打开 / Open` 按钮在隐藏与显示之间切换，并输出 `Open / 已打开` 或 `Closed / 已关闭`；没有面板内关闭按钮、外部点击关闭或 Escape 关闭。 | **Low** | **Low** — 只能观察到一个普通面板的显隐，锚定、浮动和可交互内容等定义核心无法被辨认。 | 缺少锚点定位、箭头、交互式内容、可选焦点管理、外部点击关闭，以及选择器/菜单/筛选器等实际内容；当前不应视为完整 Popover。 |
+| `hover-card` — Hover Card / 悬停卡片 | **Definition:** 一种显示在悬停或获得焦点的实体附近、通常不会阻断背景操作的丰富预览。<br>**Use:** 用于展示角色预览、个人资料摘要、关联文档预览和素材元数据。 | `preview.renderer = hover-card`，但 `preview-renderer.js` 将其映射到专用 `Tooltip` 构造器，而不是卡片 renderer。 | 可见一个 `ⓘ` 按钮；触发后显示带 `role="tooltip"` 的单行/短文本提示，内容是英文用途说明，而非角色头像、资料元数据、关联文档或操作按钮。 | 鼠标进入或按钮获得焦点时显示；点击可切换；鼠标离开或失焦后约 120ms 隐藏；Escape 可隐藏。 | **Low** | **Low** — 有邻近触发器和非模态显隐，但没有丰富预览这一决定性特征，用户难以将其识别为 Hover Card。 | 缺少 hover 延迟与指针间隙桥接、预览卡片表面、头像/图片、元数据、可选交互和 pinned 状态；当前实现本质上是 Tooltip，不应声称为完整 Hover Card。 |
+| `dialog` — Dialog / 对话框 | **Definition:** 一种用于聚焦任务的独立界面表面；模态是其中阻断背景操作的行为方式。<br>**Use:** 用于确认危险操作、编辑内容、收集简短输入，以及完成一段聚焦的工作流程。 | `preview.renderer = dialog`，由 `renderPreview()` 组合专用 `Modal` 与 `Button`；这里的 Modal 是当前 Dialog 的具体实现。 | 初始可见 `打开 / Open` 按钮；打开后出现原生 `dialog` 模态层、背景遮罩、标题 `Dialog / 对话框`、英文用途说明、关闭按钮、`Cancel` 和 `Confirm` 按钮。 | 点击打开按钮调用 `showModal()`；打开时焦点移到取消按钮。可用关闭按钮、Cancel、遮罩点击或允许时的 Escape 关闭；Confirm 只发出确认事件，当前没有提交逻辑，也不会自动关闭。关闭时发出 `modal:close`。 | **High** | **High** — 独立表面、背景阻断、确认/取消和多种关闭入口均可直接观察，能够清楚表达 Dialog/Modal 的核心区别。 | 未演示输入表单、加载/错误状态、焦点恢复验证、不可关闭模式、非模态 Dialog 或向导流程；确认按钮当前仅是事件出口。 |
+| `drawer` — Drawer / 抽屉 | **Definition:** 一种从视口边缘进入、用于提供次要内容或控件的侧边或边缘面板。<br>**Use:** 用于检查器、设置、详情、导航、筛选器，以及响应式布局中的次要内容。 | `preview.renderer = drawer` 没有专用构造器，回退到 `EntityDemo.buildOverlay()`；没有使用侧边栏、滑入动画或 Dialog/Modal 组件。 | 可见 `打开 / Open` 按钮；点击后在普通 demo stage 中显示一个普通 `div.entity-demo__panel`，包含 `Drawer / 抽屉` 标题和英文用途说明。面板没有从左/右/底部进入的视觉表现。 | 点击触发按钮切换普通面板的 `hidden` 属性，并输出打开/关闭状态；没有专用关闭按钮、边缘滑入、调整大小、持久状态或 Escape/外部点击关闭。 | **Low** | **Low** — 仅能看见一个普通面板的显隐，无法感知“从视口边缘进入”的核心定义。 | 缺少边缘定位、滑入/滑出、遮罩、关闭按钮、调整大小、持久/临时模式和焦点管理；当前不应视为完整 Drawer。 |
+| `sheet` — Sheet / 覆盖式面板 | **Definition:** 一种附着在屏幕边缘的内容面板，尤其常见于响应式或移动端交互模式。<br>**Use:** 用于移动端筛选器、操作、详情、媒体控制和临时任务内容。 | `preview.renderer = sheet` 没有专用构造器，回退到 `EntityDemo.buildOverlay()`；与 Drawer、Popover 共用同一通用 overlay 分支。 | 可见 `打开 / Open` 按钮；打开后显示普通 stage 内的 `div.entity-demo__panel`，包含 `Sheet / 覆盖式面板` 标题和英文用途说明。没有底部面板、拖拽把手或移动端布局。 | 点击触发按钮在 `hidden` 与显示之间切换，并输出打开/关闭状态；没有拖拽调整、detent 吸附、全高展开、专用关闭或 Escape 关闭。 | **Low** | **Low** — 普通显隐只说明“有一个面板”，不能说明 Sheet 的边缘附着、拖拽和响应式特征。 | 缺少底部/侧边定位、Handle、拖拽调整、detent、关闭/撤销手势、全高展开和移动端情境；当前不应视为完整 Sheet。 |
+
+## 统计
+
+按 `Match` 统计：High **2**、Medium **0**、Low **4**；共 **6** 条审计记录。按 `Significance` 统计：High **2**、Medium **0**、Low **4**。翻译字段 `definitionZh` 和 `useZh` 已为 6 条实体全部补齐。
