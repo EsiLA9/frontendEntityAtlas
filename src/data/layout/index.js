@@ -13,7 +13,7 @@ export const layout = [
     definitionZh: '一种将相关项目沿垂直或水平方向依次排列的布局容器。',
     use: 'Form fields, action groups, card content, toolbars, and simple page sections.',
     useZh: '用于排列表单字段、操作组、卡片内容、工具栏和简单的页面区块。',
-    preview: { renderer: 'stack', interactive: false, example: '垂直排列 / Vertical stack' },
+    preview: { renderer: 'stack', scenario: 'stack', interactive: false, example: '垂直排列 / Vertical stack' },
   },
   {
     id: 'flex',
@@ -29,7 +29,7 @@ export const layout = [
     definitionZh: '一种一维布局容器，沿可伸缩的轴分配空间并对齐其中的项目。',
     use: 'Headers, action rows, metadata, navigation, and adaptive control groups.',
     useZh: '用于页头、操作行、元数据、导航和需要适应可用空间的控件组。',
-    preview: { renderer: 'flex', interactive: false, example: '弹性排列 / Flexible row' },
+    preview: { renderer: 'flex', scenario: 'flex', interactive: false, example: '弹性排列 / Flexible row' },
   },
   {
     id: 'grid',
@@ -45,7 +45,7 @@ export const layout = [
     definitionZh: '一种二维布局系统，将内容组织在行和列组成的网格中。',
     use: 'Card galleries, dashboards, image grids, property layouts, and responsive collections.',
     useZh: '用于卡片画廊、仪表盘、图片网格、属性布局和响应式内容集合。',
-    preview: { renderer: 'grid', interactive: false, example: '二维网格 / Two-dimensional grid' },
+    preview: { renderer: 'grid', scenario: 'grid', interactive: false, example: '二维网格 / Two-dimensional grid' },
   },
   {
     id: 'cluster',

@@ -29,7 +29,7 @@ export const advanced = [
     definitionZh: '用于组合字段、运算符、值和条件组，以构建嵌套逻辑条件的编辑器。',
     use: 'Advanced filters, eligibility rules, workflows, content queries, and structured condition data.',
     useZh: '用于高级筛选、资格规则、工作流、内容查询和结构化条件数据。',
-    preview: { renderer: 'query-builder', interactive: true, example: 'ALL → 等级 ≥ 10 · 标签包含 Student' },
+    preview: { renderer: 'query-builder', scenario: 'query-builder', scale: 'scene', interactive: true, example: 'ALL → 等级 ≥ 10 · 标签包含 Student' },
   },
   {
     id: 'builder-editor',
@@ -77,7 +77,7 @@ export const advanced = [
     definitionZh: '允许用户通过指针或键盘移动、复制、附加或导入对象的一套交互系统。',
     use: 'Reorderable lists, layer trees, file uploads, node connections, and collection editing.',
     useZh: '用于可重排列表、图层树、文件上传、节点连接和集合编辑。',
-    preview: { renderer: 'drag-and-drop', interactive: true, example: '拖动项目 / Drag item' },
+    preview: { renderer: 'drag-and-drop', scenario: 'drag-and-drop', scale: 'scene', interactive: true, example: '拖动项目 / Drag item' },
   },
   {
     id: 'selection-system',
@@ -93,7 +93,7 @@ export const advanced = [
     definitionZh: '独立于键盘焦点和悬停状态，用于追踪选中对象的共享模型。',
     use: 'Tables, lists, trees, layers, canvas objects, bulk actions, and inspector context.',
     useZh: '用于表格、列表、树、图层、画布对象、批量操作和检查器上下文。',
-    preview: { renderer: 'selection-system', interactive: true, example: '已选 2 项 / 2 selected' },
+    preview: { renderer: 'selection-system', scenario: 'selection-system', interactive: true, example: '已选 2 项 / 2 selected' },
   },
   {
     id: 'wizard',
@@ -141,7 +141,7 @@ export const advanced = [
     definitionZh: '由实体集合控制当前选中实体详情视图的一种界面模式。',
     use: 'Mail, assets, layers, definitions, settings, and entity editing.',
     useZh: '用于邮件、资产、图层、定义、设置和实体编辑。',
-    preview: { renderer: 'master-detail', interactive: true, example: '列表 → 详情 / List → Detail' },
+    preview: { renderer: 'master-detail', scenario: 'master-detail', scale: 'scene', interactive: true, example: '列表 → 详情 / List → Detail' },
   },
   {
     id: 'list-detail-inspector',
@@ -157,7 +157,7 @@ export const advanced = [
     definitionZh: '将集合导航、主要工作区和所选对象属性分开的三区域编辑器模式。',
     use: 'Definition editors, theme tools, content management, and left/center/right workspaces.',
     useZh: '用于定义编辑器、主题工具、内容管理以及左中右三栏工作区。',
-    preview: { renderer: 'list-detail-inspector', interactive: true, example: '导航 | 编辑器 | 属性' },
+    preview: { renderer: 'list-detail-inspector', scenario: 'list-detail-inspector', scale: 'scene', interactive: true, example: '导航 | 编辑器 | 属性' },
   },
   {
     id: 'dashboard',

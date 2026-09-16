@@ -77,7 +77,7 @@ export const navigation = [
     definitionZh: '一种持续显示在页面侧面的区域，用于组织目的地和导航分组。',
     use: 'Applications, dashboards, editors, file browsers, and multi-section workspaces.',
     useZh: '用于应用、仪表板、编辑器、文件浏览器和包含多个分区的工作区。',
-    preview: { renderer: 'sidebar-navigation', interactive: true, example: '导航分组 / Navigation sections' },
+    preview: { renderer: 'sidebar-navigation', scenario: 'sidebar-navigation', scale: 'scene', interactive: true, example: '导航分组 / Navigation sections' },
   },
   {
     id: 'tree-navigation',
@@ -93,7 +93,7 @@ export const navigation = [
     definitionZh: '一种层级化导航控件，其中的条目可以展开以显示嵌套的目的地或对象。',
     use: 'File systems, project navigation, layer hierarchies, and nested definitions.',
     useZh: '用于文件系统、项目导航、图层层级和嵌套定义。',
-    preview: { renderer: 'tree-navigation', interactive: true, example: '项目树 / Project tree' },
+    preview: { renderer: 'tree-navigation', scenario: 'tree-navigation', scale: 'scene', interactive: true, example: '项目树 / Project tree' },
   },
 ];
 

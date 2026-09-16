@@ -109,7 +109,7 @@ export const display = [
     definitionZh: '一种按行和列组织内容、便于阅读表格数据的结构化展示方式。',
     use: 'Read-only records, reports, comparisons, logs, and compact datasets.',
     useZh: '用于只读记录、报告、对比、日志和规模较小的数据集。',
-    preview: { renderer: 'table', interactive: true, example: '名称 | 类型 | 状态' },
+    preview: { renderer: 'table', scenario: 'table', scale: 'scene', interactive: true, example: '名称 | 类型 | 状态' },
   },
   {
     id: 'data-grid',
@@ -125,7 +125,7 @@ export const display = [
     definitionZh: '一种交互式数据工作区，将表格展示与编辑、选择和数据操作结合起来。',
     use: 'Editor data management, spreadsheets, bulk operations, imports, and large collections.',
     useZh: '用于编辑器中的数据管理、电子表格式操作、批量处理、导入和大型集合。',
-    preview: { renderer: 'data-grid', interactive: true, example: '可编辑数据网格 / Editable data grid' },
+    preview: { renderer: 'data-grid', scenario: 'data-grid', scale: 'scene', interactive: true, example: '可编辑数据网格 / Editable data grid' },
   },
   {
     id: 'property-view',
@@ -205,7 +205,7 @@ export const display = [
     definitionZh: '一种用于表示嵌套数据层级的层次化视图，不限于导航场景。',
     use: 'Conditions, JSON objects, layers, folders, scene graphs, and nested definitions.',
     useZh: '用于条件、JSON 对象、图层、文件夹、场景图和嵌套定义。',
-    preview: { renderer: 'tree-view', interactive: true, example: '条件树 / Condition tree' },
+    preview: { renderer: 'tree-view', scenario: 'tree-view', scale: 'component', interactive: true, example: '条件树 / Condition tree' },
   },
 ];
 

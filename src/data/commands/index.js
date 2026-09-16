@@ -61,7 +61,7 @@ export const commands = [
     definitionZh: '一种可搜索的命令启动器，帮助用户发现并通过键盘执行应用操作。',
     use: 'Editor commands, navigation, validation, theme actions, and power-user workflows.',
     useZh: '用于编辑器命令、页面导航、校验、主题操作和高级用户工作流。',
-    preview: { renderer: 'command-palette', interactive: true, example: '> 搜索命令 / Search commands' },
+    preview: { renderer: 'command-palette', scenario: 'command-palette', interactive: true, example: '> 搜索命令 / Search commands' },
   },
   {
     id: 'keyboard-shortcut-ui',

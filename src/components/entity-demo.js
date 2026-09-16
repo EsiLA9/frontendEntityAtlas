@@ -168,6 +168,49 @@ export class EntityDemo extends ComponentBase {
 
   buildScenario_diff(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__diff' }, [createElement(doc, 'pre', {}, ['Before\nname: "A"\nlevel: 2']), createElement(doc, 'pre', {}, ['After\nname: "B"\nlevel: 3\n+ enabled: true'])])); }
 
+  buildScenario_command_palette(doc, stage) {
+    const commands = ['Open file', 'Rename entity', 'Toggle grid', 'Export JSON'];
+    const input = createElement(doc, 'input', { className: 'entity-demo__input', placeholder: '> Search commands', ariaLabel: 'Search commands' });
+    const list = createElement(doc, 'div', { className: 'entity-demo__command-list', role: 'menu' });
+    const render = () => { const query = input.value.toLowerCase(); list.replaceChildren(...commands.filter(item => item.toLowerCase().includes(query)).map(item => this.control(doc, 'button', item, () => this.setStatus(`Executed: ${item}`), { className: 'entity-demo__command-item', role: 'menuitem' }))); };
+    this.listen(input, 'input', render); render(); stage.append(input, list);
+  }
+
+  buildScenario_sidebar_navigation(doc, stage) {
+    const shell = createElement(doc, 'div', { className: 'entity-demo__sidebar-scene' });
+    const sidebar = createElement(doc, 'nav', { className: 'entity-demo__sidebar', ariaLabel: 'Sidebar navigation' });
+    const content = createElement(doc, 'div', { className: 'entity-demo__scene-content' }, ['Dashboard']);
+    [['Overview', 'Dashboard'], ['Entities', 'Entity list'], ['Settings', 'Design settings']].forEach(([label, result], index) => { const item = this.control(doc, 'button', label, () => { sidebar.querySelectorAll('button').forEach(node => node.classList.remove('is-selected')); item.classList.add('is-selected'); content.textContent = result; this.setStatus(`Navigate: ${result}`); }, { className: index === 0 ? 'is-selected' : '' }); sidebar.append(item); }); shell.append(sidebar, content); stage.append(shell);
+  }
+
+  buildScenario_tree_navigation(doc, stage) {
+    const tree = createElement(doc, 'ul', { className: 'entity-demo__tree', role: 'tree' });
+    const addBranch = (label, children = []) => { const li = createElement(doc, 'li', { role: 'treeitem' }); const button = this.control(doc, 'button', `${children.length ? '▸ ' : '　 '}${label}`, () => { li.classList.toggle('is-open'); button.textContent = `${li.classList.contains('is-open') ? '▾ ' : '▸ '}${label}`; this.setStatus(`Selected: ${label}`); }, { className: 'entity-demo__tree-item' }); li.append(button); if (children.length) { const nested = createElement(doc, 'ul', { className: 'entity-demo__tree-children' }); children.forEach(child => nested.append(addBranch(child))); li.append(nested); } return li; };
+    tree.append(addBranch('Projects', ['Atlas', 'Website']), addBranch('Components', ['Button', 'Menu'])); stage.append(tree);
+  }
+
+  buildScenario_stack(doc, stage) { stage.append(this.layoutScene(doc, 'column', 'single axis · gap 8px / 单轴排列 · 间距 8px', 3)); }
+  buildScenario_flex(doc, stage) { stage.append(this.layoutScene(doc, 'row', 'main axis → · align center / 主轴 → · 交叉轴居中', 3)); }
+  buildScenario_grid(doc, stage) { const scene = this.layoutScene(doc, 'grid', 'rows × columns · 2D tracks / 行 × 列 · 二维轨道', 6); stage.append(scene); }
+
+  layoutScene(doc, mode, note, count) { const shell = createElement(doc, 'div', { className: `entity-demo__layout-scene is-${mode}` }); const viewport = createElement(doc, 'div', { className: 'entity-demo__layout-viewport' }); for (let i = 0; i < count; i += 1) viewport.append(createElement(doc, 'span', {}, [`${String.fromCharCode(65 + i)}`])); shell.append(viewport, createElement(doc, 'small', { className: 'entity-demo__constraint-note' }, [note])); return shell; }
+
+  buildScenario_table(doc, stage) { const rows = [['Yuuka', 'Student', 'Active'], ['Noa', 'Student', 'Draft'], ['Hina', 'Student', 'Active']]; const table = createElement(doc, 'table', { className: 'entity-demo__real-table' }); table.append(createElement(doc, 'thead', {}, [createElement(doc, 'tr', {}, ['Name', 'Type', 'Status'].map(label => createElement(doc, 'th', {}, [label])))])); const body = createElement(doc, 'tbody'); rows.forEach(row => { const tr = createElement(doc, 'tr', { tabIndex: 0 }); row.forEach(value => tr.append(createElement(doc, 'td', {}, [value]))); this.listen(tr, 'click', () => { body.querySelectorAll('tr').forEach(node => node.classList.remove('is-selected')); tr.classList.add('is-selected'); this.setStatus(`Selected row: ${row[0]}`); }); body.append(tr); }); table.append(body); stage.append(table); }
+
+  buildScenario_data_grid(doc, stage) { const grid = createElement(doc, 'div', { className: 'entity-demo__data-grid', role: 'grid' }); [['Name', 'Level', 'Enabled'], ['Yuuka', '50', 'Yes'], ['Noa', '42', 'No']].forEach((row, rowIndex) => { const line = createElement(doc, 'div', { className: rowIndex === 0 ? 'is-header' : '' }); row.forEach((value, colIndex) => { const cell = createElement(doc, rowIndex === 0 ? 'span' : 'input', { value, ariaLabel: `${row[0]} ${colIndex}` }); if (rowIndex > 0) this.listen(cell, 'change', () => this.setStatus(`Cell changed: ${cell.value}`)); line.append(cell); }); grid.append(line); }); stage.append(grid); }
+
+  buildScenario_tree_view(doc, stage) { this.buildScenario_tree_navigation(doc, stage); }
+
+  buildScenario_query_builder(doc, stage) { const rows = createElement(doc, 'div', { className: 'entity-demo__query-rows' }); const add = () => { const row = createElement(doc, 'div', { className: 'entity-demo__query-row' }, ['AND', 'Level', '≥', createElement(doc, 'input', { value: '50', ariaLabel: 'Query value' })]); rows.append(row); }; add(); const button = this.control(doc, 'button', '+ Add condition', () => { add(); this.setStatus(`${rows.children.length} conditions / 个条件`); }); stage.append(createElement(doc, 'strong', {}, ['ALL conditions']), rows, button); }
+
+  buildScenario_drag_and_drop(doc, stage) { const zones = createElement(doc, 'div', { className: 'entity-demo__drop-zones' }); const source = this.control(doc, 'button', 'Item A', () => { source.draggable = true; this.setStatus('Drag started / 开始拖动'); }, { className: 'entity-demo__drag-source', draggable: 'true' }); const target = createElement(doc, 'div', { className: 'entity-demo__drop-target' }, ['Drop zone B']); this.listen(target, 'dragover', event => event.preventDefault()); this.listen(target, 'drop', event => { event.preventDefault(); target.textContent = 'Item A → Zone B'; this.setStatus('Dropped in Zone B / 已放置到区域 B'); }); zones.append(source, target); stage.append(zones); }
+
+  buildScenario_selection_system(doc, stage) { const items = ['Layer A', 'Layer B', 'Layer C']; const list = createElement(doc, 'div', { className: 'entity-demo__selection-list' }); const update = () => this.setStatus(`${list.querySelectorAll('.is-selected').length} selected / 项已选择`); items.forEach(label => { const item = this.control(doc, 'button', label, event => { item.classList.toggle('is-selected'); if (!event.shiftKey) { list.querySelectorAll('button').forEach(node => { if (node !== item) node.classList.remove('is-selected'); }); } update(); }, { className: 'entity-demo__selectable' }); list.append(item); }); stage.append(createElement(doc, 'small', {}, ['Click one; Shift-click to extend selection / 点击单选，Shift+点击扩展']), list); }
+
+  buildScenario_master_detail(doc, stage) { const shell = createElement(doc, 'div', { className: 'entity-demo__master-detail scene' }); const master = createElement(doc, 'div', { className: 'entity-demo__master' }); const detail = createElement(doc, 'div', { className: 'entity-demo__detail' }, ['Select an item / 选择项目']); ['Yuuka', 'Noa', 'Hina'].forEach(label => { const item = this.control(doc, 'button', label, () => { detail.textContent = `${label} · properties / 属性`; master.querySelectorAll('button').forEach(node => node.classList.remove('is-selected')); item.classList.add('is-selected'); this.setStatus(`Detail loaded: ${label}`); }, { className: 'entity-demo__list-item' }); master.append(item); }); shell.append(master, detail); stage.append(shell); }
+
+  buildScenario_list_detail_inspector(doc, stage) { const scene = createElement(doc, 'div', { className: 'entity-demo__three-pane' }); ['Navigation', 'Editor', 'Inspector'].forEach((label, index) => scene.append(createElement(doc, 'div', { className: `pane-${index}` }, [label]))); stage.append(scene); }
+
   buildAction(doc, stage) {
     const button = this.control(doc, 'button', '执行动作 / Run action', () => {
       button.textContent = '✓ 已触发 / Triggered';
