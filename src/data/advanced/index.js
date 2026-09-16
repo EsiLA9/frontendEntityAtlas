@@ -13,7 +13,7 @@ export const advanced = [
     definitionZh: '通过用户选择的条件缩小当前集合，只保留符合条件的项目。',
     use: 'Asset browsers, tables, search results, dashboards, and large entity collections.',
     useZh: '用于资产浏览器、表格、搜索结果、仪表盘和大型实体集合。',
-    preview: { renderer: 'filter', interactive: true, example: '筛选：状态 = 进行中 / Status = Active' },
+    preview: { renderer: 'filter', scenario: 'filter', interactive: true, scale: 'component', example: '筛选：状态 = 进行中 / Status = Active' },
   },
   {
     id: 'query-builder',
@@ -381,7 +381,7 @@ export const advanced = [
     definitionZh: '使两个版本或表示形式之间的变化明确可见的比较视图。',
     use: 'Code, JSON, configuration, image comparison, revisions, and review workflows.',
     useZh: '用于代码、JSON、配置、图像比较、修订和审查流程。',
-    preview: { renderer: 'diff', interactive: true, example: '+ 新增 · − 删除 · ~ 修改' },
+    preview: { renderer: 'diff', scenario: 'diff', interactive: true, scale: 'component', example: '+ 新增 · − 删除 · ~ 修改' },
   },
   {
     id: 'inspector',

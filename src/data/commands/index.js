@@ -13,7 +13,7 @@ export const commands = [
     definitionZh: '一种由触发器或应用区域提供的命令或操作列表。',
     use: 'Overflow actions, application commands, contextual operations, and grouped actions.',
     useZh: '用于承载溢出操作、应用命令、上下文操作和分组操作。',
-    preview: { renderer: 'menu', interactive: true, example: '更多操作 / More actions' },
+    preview: { renderer: 'menu', scenario: 'menu', interactive: true, example: '更多操作 / More actions' },
   },
   {
     id: 'context-menu',
@@ -29,7 +29,7 @@ export const commands = [
     definitionZh: '一种菜单，其命令取决于调用它时所针对的对象或位置。',
     use: 'Layer operations, file operations, row actions, canvas objects, and editor targets.',
     useZh: '用于图层、文件、表格行、画布对象和编辑器目标的操作。',
-    preview: { renderer: 'context-menu', interactive: true, example: '右键打开 / Open context menu' },
+    preview: { renderer: 'context-menu', scenario: 'context-menu', interactive: true, example: '右键打开 / Open context menu' },
   },
   {
     id: 'toolbar',
@@ -93,7 +93,7 @@ export const commands = [
     definitionZh: '一种基于历史记录的交互模式，用于反转或重新执行会改变状态的命令。',
     use: 'Editors, forms, canvas workspaces, layer operations, and data transformations.',
     useZh: '用于编辑器、表单、画布工作区、图层操作和数据变换。',
-    preview: { renderer: 'undo-redo', interactive: true, example: '撤销 ↶ · 重做 ↷' },
+    preview: { renderer: 'undo-redo', scenario: 'undo-redo', interactive: true, example: '撤销 ↶ · 重做 ↷' },
   },
   {
     id: 'contextual-actions',

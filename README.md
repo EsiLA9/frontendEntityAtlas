@@ -10,7 +10,7 @@
 
 当前已从 `sol_todo.md` 拆出 124 个实体，覆盖 Actions、Navigation、Selection、Forms、Feedback、Overlays、Disclosure、Layout、Commands、Data Display 和 Advanced 概念族；支持中英文/用途搜索、分类筛选、详情弹层、键盘打开详情和高对比度切换。
 
-卡片内的实体预览也是可操作的：15 个实体使用专用 renderer；其余 109 个实体由 `EntityDemo` 按动作、输入、选择、导航、反馈、弹层、数据展示、布局、拖放、步骤、主从关系、工作区等语义生成最小交互。现在不再把未实现的概念静态回退成只有文字的 Card。点击卡片其他区域仍会打开术语详情。
+卡片内的实体预览采用“共享 primitive + 专门 scenario”：`preview.scenario` 显式声明实体的最小辨识场景，`preview.scale` 可标记 `micro`、`component` 或 `scene`。例如 Menu 展示命令集合，Context Menu 在目标区域打开，Pagination 展示结果集合，Filter 展示筛选前后的数据，Split Pane 使用可拖动分隔线。未声明 scenario 的旧实体仍由 `EntityDemo` 兼容渲染，但关键词 heuristic 只作为 fallback，不再用于新增实体。点击卡片其他区域仍会打开术语详情。
 
 模块化重构的边界和依赖方向见 [ARCHITECTURE.md](./ARCHITECTURE.md)。
 

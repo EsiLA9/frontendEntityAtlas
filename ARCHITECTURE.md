@@ -21,11 +21,11 @@ Each entity is plain data. Its minimum vocabulary is:
   id, en, cn, family, type,
   definition, use,
   variants, states, parts, behaviors,
-  preview
+  preview: { renderer, scenario, scale }
 }
 ```
 
-`preview` identifies a renderer; it does not contain DOM or event handlers. `states`, `parts`, and `behaviors` are written for both human readers and AI retrieval.
+`preview` identifies a renderer and, when needed, an explicit scenario; it does not contain DOM or event handlers. `scenario` describes the concept-specific composition, while shared primitives provide the visual building blocks. `scale` may be `micro`, `component`, or `scene` so complex patterns can receive enough context in detail views. `states`, `parts`, and `behaviors` are written for both human readers and AI retrieval.
 
 ## Runtime contract
 
@@ -34,11 +34,12 @@ Each entity is plain data. Its minimum vocabulary is:
 - A state machine owns transitions for interactive previews.
 - Components expose a small mount/render interface and receive an event sink or callback as a dependency.
 - Views compose components and decide layout; they do not redefine entity facts.
+- Scenario routing is explicit: `preview.scenario` is checked before the legacy generic fallback. Keyword matching remains only as a compatibility path and must not be used for new entities.
 
 ## Delivery phases
 
 1. Core contract and first data families. **Completed:** 16 core primitives, 124 catalog entities.
 2. Primitive and component renderers. **Completed:** 6 primitives and 4 components, with a renderer boundary and generic-card fallback.
 3. Gallery/detail views and application entry migration. **Completed:** the HTML entry now loads `src/app.js` as a native ES module.
-4. Composite and pattern families from `sol_todo.md`. **Cataloged:** data is present; dedicated renderers can be added by `preview.renderer` without changing the catalog.
+4. Composite and pattern families from `sol_todo.md`. **In progress:** concept-specific scenarios are being added through `preview.scenario`, with shared primitives and `scene`-scale layouts for complex patterns.
 5. Search, comparison, state inspection, and regression checks. **In progress:** search and detail inspection are wired; comparison and richer state inspection remain the next extension point.

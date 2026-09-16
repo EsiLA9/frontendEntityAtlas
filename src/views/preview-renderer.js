@@ -24,7 +24,7 @@ function uiEntity(entity) {
 
 function optionsFor(entity, context) {
   const source = uiEntity(entity);
-  const renderer = entity.rendererId ?? entity.metadata?.preview?.renderer ?? entity.id;
+  const renderer = entity.rendererId ?? entity.preview?.renderer ?? entity.metadata?.preview?.renderer ?? entity.id;
   const common = { entity: source, context, ariaLabel: `${source.en} / ${source.cn}` };
   if (renderer === 'button' || renderer === 'icon-button' || renderer === 'link-button') return { ...common, label: source.metadata?.preview?.example ?? '保存 / Save', variant: 'primary' };
   if (renderer === 'text-field' || renderer === 'search-field') return { ...common, label: source.cn, placeholder: '输入内容…', helperText: source.use };
@@ -40,7 +40,7 @@ function optionsFor(entity, context) {
 
 /** Mount the best available interactive implementation for an entity. */
 export function renderPreview(entity, host, { emit = () => {} } = {}) {
-  const rendererId = entity.rendererId ?? entity.metadata?.preview?.renderer ?? '';
+  const rendererId = entity.rendererId ?? entity.preview?.renderer ?? entity.metadata?.preview?.renderer ?? '';
   if (rendererId === 'modal' || rendererId === 'dialog') {
     const source = uiEntity(entity);
     const context = { document: host.ownerDocument, idPrefix: `preview-${entity.id}`, emit };

@@ -157,7 +157,7 @@ export const layout = [
     definitionZh: '一种由两个或多个面板组成的布局，用户可以调整面板之间边界的大小。',
     use: 'Editor workspaces, code and preview, list/detail, and multi-column applications.',
     useZh: '用于编辑器工作区、代码与预览、列表与详情，以及多列应用。',
-    preview: { renderer: 'split-pane', interactive: true, example: '面板 A ↔ 面板 B / Pane A ↔ Pane B' },
+    preview: { renderer: 'split-pane', scenario: 'split-pane', interactive: true, scale: 'scene', example: '面板 A ↔ 面板 B / Pane A ↔ Pane B' },
   },
   {
     id: 'resizable',

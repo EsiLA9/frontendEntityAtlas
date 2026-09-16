@@ -13,7 +13,7 @@ export const display = [
     definitionZh: '一种具有语义的文本内容单元，用于传达标签、描述、数值或消息。',
     use: 'Titles, body copy, metadata, helper text, captions, code, and status messages.',
     useZh: '用于标题、正文、元数据、辅助说明、图注、代码和状态消息。',
-    preview: { renderer: 'text', interactive: false, example: '一段说明文本 / Descriptive text' },
+    preview: { renderer: 'text', scenario: 'text', interactive: false, example: '一段说明文本 / Descriptive text' },
   },
   {
     id: 'icon',
@@ -29,7 +29,7 @@ export const display = [
     definitionZh: '一种紧凑的视觉符号，用于表达含义、状态或可执行的操作。',
     use: 'Navigation, status, actions, identity, and visual grouping.',
     useZh: '用于导航、状态提示、操作入口、身份识别和视觉分组。',
-    preview: { renderer: 'icon', interactive: true, example: 'ⓘ · ✓ · ⚠' },
+    preview: { renderer: 'icon', scenario: 'icon', interactive: true, example: 'ⓘ · ✓ · ⚠' },
   },
   {
     id: 'avatar',
@@ -45,7 +45,7 @@ export const display = [
     definitionZh: '用于表示人员、代理或其他行为主体身份的紧凑视觉标识。',
     use: 'Users, collaborators, owners, authors, assignees, and presence indicators.',
     useZh: '用于显示用户、协作者、负责人、作者、受指派人和在线状态。',
-    preview: { renderer: 'avatar', interactive: true, example: 'YU / 用户头像' },
+    preview: { renderer: 'avatar', scenario: 'avatar', interactive: true, example: 'YU / 用户头像' },
   },
   {
     id: 'badge',
@@ -61,7 +61,7 @@ export const display = [
     definitionZh: '用于紧凑标示状态、类别、数量或通知状态的视觉标签。',
     use: 'Unread counts, statuses, categories, availability, and compact metadata.',
     useZh: '用于显示未读数、状态、分类、可用性和紧凑的元数据。',
-    preview: { renderer: 'badge', interactive: false, example: '进行中 / In progress' },
+    preview: { renderer: 'badge', scenario: 'badge', interactive: false, example: '进行中 / In progress' },
   },
   {
     id: 'card',

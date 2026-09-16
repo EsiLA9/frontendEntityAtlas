@@ -43,7 +43,11 @@ export class EntityDemo extends ComponentBase {
   }
 
   kind() {
-    return text(this.entity.rendererId ?? this.entity.metadata?.preview?.renderer ?? this.entity.id).toLowerCase();
+    return text(this.entity.rendererId ?? this.entity.preview?.renderer ?? this.entity.metadata?.preview?.renderer ?? this.entity.id).toLowerCase();
+  }
+
+  scenario() {
+    return text(this.entity.preview?.scenario ?? this.entity.metadata?.preview?.scenario).toLowerCase();
   }
 
   has(...values) {
@@ -65,6 +69,11 @@ export class EntityDemo extends ComponentBase {
   }
 
   buildDemo(doc, stage) {
+    const scenario = this.scenario();
+    if (scenario && typeof this[`buildScenario_${scenario.replace(/[^a-z0-9]+/g, '_')}`] === 'function') {
+      this[`buildScenario_${scenario.replace(/[^a-z0-9]+/g, '_')}`](doc, stage);
+      return;
+    }
     const kind = this.kind();
     if (this.has('button', 'action', 'command', 'shortcut')) return this.buildAction(doc, stage);
     if (this.has('text-field', 'textarea', 'search', 'reference', 'code-viewer')) return this.buildText(doc, stage);
@@ -89,6 +98,75 @@ export class EntityDemo extends ComponentBase {
     if (this.has('filter', 'query', 'editor', 'builder', 'preview', 'diff', 'object', 'collection')) return this.buildEditor(doc, stage);
     return this.buildGeneric(doc, stage);
   }
+
+  buildScenario_menu(doc, stage) {
+    const trigger = this.control(doc, 'button', '⋯ 更多操作 / More', () => { menu.hidden = !menu.hidden; this.setStatus(menu.hidden ? 'Menu closed / 菜单已关闭' : 'Menu open / 菜单已打开'); }, { className: 'entity-demo__primary', ariaHaspopup: 'menu', ariaExpanded: 'false' });
+    const menu = createElement(doc, 'div', { className: 'entity-demo__menu', role: 'menu', hidden: true });
+    [['✎ 重命名 / Rename', 'Renamed'], ['⧉ 复制 / Duplicate', 'Duplicated'], ['✓ 显示网格 / Show grid', 'Grid toggled'], ['🗑 删除 / Delete', 'Delete requested']].forEach(([label, result], index) => {
+      if (index === 2) menu.append(createElement(doc, 'div', { className: 'entity-demo__separator', role: 'separator' }));
+      const item = this.control(doc, 'button', label, () => { if (index !== 3) menu.hidden = true; this.setStatus(`${result} / ${label.split(' / ')[0]}`); }, { className: 'entity-demo__menu-item', role: 'menuitem' });
+      menu.append(item);
+    });
+    stage.append(trigger, menu);
+  }
+
+  buildScenario_context_menu(doc, stage) {
+    const target = createElement(doc, 'div', { className: 'entity-demo__context-target', tabIndex: 0 }, ['document.md · 右键这里 / Right-click here']);
+    const menu = createElement(doc, 'div', { className: 'entity-demo__menu entity-demo__context-popup', role: 'menu', hidden: true });
+    ['打开 / Open', '重命名 / Rename', '复制 / Duplicate', '删除 / Delete'].forEach(label => {
+      const item = this.control(doc, 'button', label, () => { menu.hidden = true; this.setStatus(`Context action: ${label}`); }, { className: 'entity-demo__menu-item', role: 'menuitem' });
+      menu.append(item);
+    });
+    this.listen(target, 'contextmenu', event => { event.preventDefault(); menu.hidden = false; menu.style.left = `${Math.min(event.offsetX, 120)}px`; menu.style.top = `${Math.min(event.offsetY, 45)}px`; this.setStatus('Context menu open / 上下文菜单已打开'); });
+    stage.append(createElement(doc, 'div', { className: 'entity-demo__context-shell' }, [target, menu]));
+  }
+
+  buildScenario_link(doc, stage) {
+    const link = createElement(doc, 'a', { className: 'entity-demo__real-link', href: '#documentation' }, ['打开文档 / Open documentation ↗']);
+    this.listen(link, 'click', () => this.setStatus('Navigated to documentation / 已导航到文档'));
+    stage.append(link);
+  }
+
+  buildScenario_breadcrumb(doc, stage) {
+    const nav = createElement(doc, 'nav', { className: 'entity-demo__breadcrumb', ariaLabel: 'Breadcrumb' });
+    ['Home', 'Projects', 'Atlas', 'Components'].forEach((label, index, items) => { nav.append(createElement(doc, 'a', { href: `#${label.toLowerCase()}` }, [label])); if (index < items.length - 1) nav.append(createElement(doc, 'span', { ariaHidden: 'true' }, [' / '])); });
+    this.listen(nav, 'click', event => { if (event.target.tagName === 'A') this.setStatus(`Ancestor: ${event.target.textContent}`); });
+    stage.append(nav);
+  }
+
+  buildScenario_pagination(doc, stage) {
+    let page = 3;
+    const collection = createElement(doc, 'div', { className: 'entity-demo__collection' }, ['Results 21–30 of 120 / 第 21–30 条，共 120 条']);
+    const controls = createElement(doc, 'div', { className: 'entity-demo__pagination', role: 'navigation', ariaLabel: 'Pagination' });
+    const render = () => { controls.replaceChildren(); [['‹', -1], ['1', 1], ['2', 2], ['3', 3], ['4', 4], ['›', 1]].forEach(([label, delta], index) => { const button = this.control(doc, 'button', label, () => { page = index === 0 ? Math.max(1, page - 1) : index === 5 ? Math.min(12, page + 1) : delta; collection.textContent = `Results ${(page - 1) * 10 + 1}–${page * 10} of 120 / 第 ${(page - 1) * 10 + 1}–${page * 10} 条，共 120 条`; render(); this.setStatus(`Page ${page} / 第 ${page} 页`); }, { className: page === delta && index > 0 && index < 5 ? 'is-selected' : '', ariaCurrent: page === delta && index > 0 && index < 5 ? 'page' : undefined }); controls.append(button); }); };
+    render(); stage.append(collection, controls);
+  }
+
+  buildScenario_split_pane(doc, stage) {
+    const shell = createElement(doc, 'div', { className: 'entity-demo__split-pane' });
+    const left = createElement(doc, 'div', { className: 'entity-demo__pane' }, ['Navigator']);
+    const divider = createElement(doc, 'button', { className: 'entity-demo__divider', ariaLabel: 'Resize panes', title: 'Drag to resize' }, ['⋮']);
+    const right = createElement(doc, 'div', { className: 'entity-demo__pane' }, ['Editor']);
+    let resizing = false;
+    this.listen(divider, 'pointerdown', event => { resizing = true; divider.setPointerCapture?.(event.pointerId); });
+    this.listen(divider, 'pointermove', event => { if (!resizing) return; const rect = shell.getBoundingClientRect(); const ratio = Math.max(.25, Math.min(.75, (event.clientX - rect.left) / rect.width)); shell.style.setProperty('--split', `${ratio * 100}%`); this.setStatus(`Pane width ${Math.round(ratio * 100)}% / 面板宽度`); });
+    this.listen(divider, 'pointerup', () => { resizing = false; });
+    shell.append(left, divider, right); stage.append(shell, createElement(doc, 'small', { className: 'entity-demo__constraint-note' }, ['drag divider · resizable adjacent panes / 拖动分隔线调整相邻面板']));
+  }
+
+  buildScenario_text(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__text-sample' }, [createElement(doc, 'strong', {}, ['Heading / 标题']), createElement(doc, 'p', {}, ['Control how the workspace looks and behaves. / 控制工作区的外观与行为。']), createElement(doc, 'small', {}, ['Caption · Last updated 2 minutes ago / 说明文字'])])); }
+  buildScenario_icon(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__icon-sample' }, ['ⓘ Information', '✓ Success', '⚠ Warning', '✕ Error'])); }
+  buildScenario_avatar(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__avatar-sample' }, [createElement(doc, 'span', {}, ['AS']), createElement(doc, 'strong', {}, ['Airi Sato']), createElement(doc, 'small', {}, ['fallback initials / 首字母回退'])])); }
+  buildScenario_badge(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__badge-sample' }, ['Inbox ', createElement(doc, 'b', {}, ['12']), ' Build ', createElement(doc, 'b', {}, ['Failed'])])); }
+
+  buildScenario_filter(doc, stage) {
+    const items = [['Yuuka', 'Millennium'], ['Noa', 'Millennium'], ['Hina', 'Gehenna'], ['Aru', 'Gehenna'], ['Hoshino', 'Abydos'], ['Shiroko', 'Abydos']];
+    const list = createElement(doc, 'div', { className: 'entity-demo__filter-list' }); const select = createElement(doc, 'select', { ariaLabel: 'School filter' }, ['All schools', 'Millennium', 'Gehenna', 'Abydos'].map(value => createElement(doc, 'option', { value }, [value]))); const apply = this.control(doc, 'button', 'Apply / 应用', () => { const selected = select.value; const filtered = selected === 'All schools' ? items : items.filter(([, school]) => school === selected); list.replaceChildren(...filtered.map(([name, school]) => createElement(doc, 'div', {}, [`${name} · ${school}`]))); this.setStatus(`${filtered.length} results / 个结果`); }); apply.click(); stage.append(createElement(doc, 'div', { className: 'entity-demo__before-after' }, [createElement(doc, 'strong', {}, ['Collection · 6 students / 集合 · 6 名学生']), select, apply]), list);
+  }
+
+  buildScenario_undo_redo(doc, stage) { let value = 'A'; const canvas = createElement(doc, 'div', { className: 'entity-demo__history-canvas' }, ['Canvas: A']); const history = []; let cursor = 0; const update = () => { canvas.textContent = `Canvas: ${value}`; undo.disabled = cursor === 0; redo.disabled = cursor === history.length; }; const edit = this.control(doc, 'button', 'Edit → B', () => { history.splice(cursor); history.push(value = 'B'); cursor = history.length; update(); }); const undo = this.control(doc, 'button', 'Undo ↶', () => { cursor--; value = cursor ? history[cursor - 1] : 'A'; update(); this.setStatus('Undo → A / 已撤销'); }); const redo = this.control(doc, 'button', 'Redo ↷', () => { value = history[cursor]; cursor++; update(); this.setStatus('Redo → B / 已重做'); }); stage.append(canvas, edit, undo, redo); update(); }
+
+  buildScenario_diff(doc, stage) { stage.append(createElement(doc, 'div', { className: 'entity-demo__diff' }, [createElement(doc, 'pre', {}, ['Before\nname: "A"\nlevel: 2']), createElement(doc, 'pre', {}, ['After\nname: "B"\nlevel: 3\n+ enabled: true'])])); }
 
   buildAction(doc, stage) {
     const button = this.control(doc, 'button', '执行动作 / Run action', () => {

@@ -13,7 +13,7 @@ export const navigation = [
     definitionZh: '一种具有语义化导航含义的目标，可将用户带到另一个位置或资源。',
     use: 'Page transitions, document references, in-page anchors, and accessibility skip navigation.',
     useZh: '用于页面跳转、文档引用、页内锚点，以及无障碍跳过重复导航内容。',
-    preview: { renderer: 'link', interactive: true, example: '打开文档 / Open docs' },
+    preview: { renderer: 'link', scenario: 'link', interactive: true, example: '打开文档 / Open docs' },
   },
   {
     id: 'tabs',
@@ -45,7 +45,7 @@ export const navigation = [
     definitionZh: '一种层级化路径，用于说明用户在嵌套内容中的当前位置。',
     use: 'Documentation, settings, product categories, file explorers, and editor hierarchies.',
     useZh: '用于文档、设置、产品分类、文件浏览器和编辑器层级结构。',
-    preview: { renderer: 'breadcrumb', interactive: true, example: '项目 / UI / 主题 / 编辑器' },
+    preview: { renderer: 'breadcrumb', scenario: 'breadcrumb', interactive: true, example: '项目 / UI / 主题 / 编辑器' },
   },
   {
     id: 'pagination',
@@ -61,7 +61,7 @@ export const navigation = [
     definitionZh: '一种用于浏览大型集合的控件，这些内容被划分为多个结果页或游标位置。',
     use: 'Search results, data tables, asset browsers, and server-side collections.',
     useZh: '用于搜索结果、数据表格、资源浏览器和服务端分页的数据集合。',
-    preview: { renderer: 'pagination', interactive: true, example: '‹ 1 2 3 … 12 ›' },
+    preview: { renderer: 'pagination', scenario: 'pagination', interactive: true, example: '‹ 1 2 3 … 12 ›' },
   },
   {
     id: 'sidebar-navigation',

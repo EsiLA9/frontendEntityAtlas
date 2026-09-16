@@ -140,6 +140,9 @@ export function normalizeEntity(input) {
       : { role: '', keyboard: [], notes: { en: '', zh: '' } },
     tags: Array.isArray(source.tags) ? [...source.tags] : [],
     rendererId: typeof source.rendererId === 'string' ? source.rendererId.trim() : null,
+    preview: isRecord(source.preview)
+      ? { ...source.preview }
+      : (isRecord(source.metadata?.preview) ? { ...source.metadata.preview } : {}),
     metadata: isRecord(source.metadata) ? { ...source.metadata } : {},
   };
 
